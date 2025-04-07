@@ -4,35 +4,30 @@ import { useAuth } from '../context/AuthContext';
 import API from '../services/api';
 
 export default function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await API.post('/auth/login', form);
-      login(res.data.user, res.data.token);
+      const res = await API.post('/auth/login', { username, password });
+      login(res.data.token);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.msg || 'Error al iniciar sesión');
+    } catch (err) {
+      alert('Credenciales incorrectas');
     }
   };
 
   return (
     <div className="container">
-      <h2>Iniciar Sesión</h2>
+      <h2>Iniciar sesión</h2>
       <form onSubmit={handleSubmit} className="form">
-        <input type="text" name="username" placeholder="Usuario" onChange={handleChange} required className="form-control" />
-        <input type="password" name="password" placeholder="Contraseña" onChange={handleChange} required className="form-control" />
+        <input type="text" placeholder="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
         <button className="btn btn-primary">Entrar</button>
       </form>
-      {error && <div className="alert alert-danger mt-2">{error}</div>}
     </div>
   );
 }
