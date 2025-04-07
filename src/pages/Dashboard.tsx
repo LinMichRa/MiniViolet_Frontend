@@ -10,7 +10,14 @@ export default function Dashboard() {
   const [carritoCount, setCarritoCount] = useState(0);
   const [editando, setEditando] = useState<null | number>(null);
 
-  const [nuevo, setNuevo] = useState({
+  const [nuevo, setNuevo] = useState<{
+    nombre: string;
+    descripcion: string;
+    precio: string;
+    categoria: string;
+    stock: string;
+    imagen: File | null;
+  }>({
     nombre: '',
     descripcion: '',
     precio: '',
@@ -120,21 +127,53 @@ export default function Dashboard() {
       <button onClick={logout} className="btn btn-danger">Salir</button>
 
       {user?.rol === 'admin' && (
-        <div className="panel panel-default mt-4">
-          <div className="panel-heading">Agregar / Editar producto</div>
-          <div className="panel-body">
-            <input className="form-control mb-2" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} />
-            <input className="form-control mb-2" placeholder="Descripción" value={nuevo.descripcion} onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })} />
-            <input className="form-control mb-2" placeholder="Precio" value={nuevo.precio} onChange={e => setNuevo({ ...nuevo, precio: e.target.value })} />
-            <input className="form-control mb-2" placeholder="Categoría" value={nuevo.categoria} onChange={e => setNuevo({ ...nuevo, categoria: e.target.value })} />
-            <input className="form-control mb-2" placeholder="Stock" value={nuevo.stock} onChange={e => setNuevo({ ...nuevo, stock: e.target.value })} />
+  <div className="panel panel-default mt-4">
+    <div className="panel-heading">Agregar / Editar producto</div>
+    <div className="panel-body">
+      <input
+        className="form-control mb-2"
+        placeholder="Nombre"
+        value={nuevo.nombre}
+        onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })}
+      />
+      <input
+        className="form-control mb-2"
+        placeholder="Descripción"
+        value={nuevo.descripcion}
+        onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })}
+      />
+      <input
+        className="form-control mb-2"
+        placeholder="Precio"
+        value={nuevo.precio}
+        onChange={e => setNuevo({ ...nuevo, precio: e.target.value })}
+      />
+      <input
+        className="form-control mb-2"
+        placeholder="Categoría"
+        value={nuevo.categoria}
+        onChange={e => setNuevo({ ...nuevo, categoria: e.target.value })}
+      />
+      <input
+        className="form-control mb-2"
+        placeholder="Stock"
+        value={nuevo.stock}
+        onChange={e => setNuevo({ ...nuevo, stock: e.target.value })}
+      />
 
-            <button className="btn btn-primary" onClick={handleSave}>
-              {editando !== null ? 'Actualizar Producto' : 'Guardar Producto'}
-            </button>
-          </div>
-        </div>
-      )}
+      <input
+        type="file"
+        className="form-control mb-2"
+        accept="image/*"
+        onChange={(e) => setNuevo({ ...nuevo, imagen: e.target.files?.[0] || null })}
+      />
+
+      <button className="btn btn-primary" onClick={handleSave}>
+        {editando !== null ? 'Actualizar Producto' : 'Guardar Producto'}
+      </button>
+    </div>
+  </div>
+)}
 
       <h4 className="mt-4">Productos en el carrito: {carritoCount}</h4>
 
