@@ -9,7 +9,7 @@ export default function Shop() {
   }, []);
 
   const agregarAlCarrito = async (product_id: number) => {
-    await API.post('/cart', { product_id, cantidad: 1 });
+    await API.post('/cart/add', { product_id, cantidad: 1 });
     alert('Producto agregado');
   };
 

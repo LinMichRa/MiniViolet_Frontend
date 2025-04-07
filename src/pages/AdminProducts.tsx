@@ -6,14 +6,14 @@ export default function AdminProducts() {
   const [nuevo, setNuevo] = useState({ nombre: '', descripcion: '', precio: '', categoria: '', stock: '' });
 
   const cargarProductos = async () => {
-    const res = await API.get('/products');
+    const res = await API.get('/products/');
     setProductos(res.data);
   };
 
   useEffect(() => { cargarProductos(); }, []);
 
   const handleAdd = async () => {
-    await API.post('/products', nuevo);
+    await API.post('/products/', nuevo);
     setNuevo({ nombre: '', descripcion: '', precio: '', categoria: '', stock: '' });
     cargarProductos();
   };
