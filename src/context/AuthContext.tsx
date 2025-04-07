@@ -16,10 +16,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const data = localStorage.getItem('user');
-    return data ? JSON.parse(data) : null;
+    try {
+      const data = localStorage.getItem('user');
+      return data && data !== 'undefined' ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error('Error al parsear el usuario del localStorage:', error);
+      return null;
+    }
   });
-
+  
   const login = (user: User, token: string) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
