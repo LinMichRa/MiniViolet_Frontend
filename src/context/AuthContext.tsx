@@ -1,39 +1,32 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
-
-interface User {
-  id: number;
-  username: string;
-  rol: 'admin' | 'user';
-}
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { User } from '../types/User';
 
 interface AuthContextType {
   user: User | null;
-  login: (user: User, token: string) => void;
+  login: (token: string) => void;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const data = localStorage.getItem('user');
-      return data && data !== 'undefined' ? JSON.parse(data) : null;
-    } catch (error) {
-      console.error('Error al parsear el usuario del localStorage:', error);
-      return null;
-    }
-  });
-  
-  const login = (user: User, token: string) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userInfo = localStorage.getItem('user');
+    if (token && userInfo) setUser(JSON.parse(userInfo));
+  }, []);
+
+  const login = (token: string) => {
+    const payload = JSON.parse(atob(token.split('.')[1]));
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
+    localStorage.setItem('user', JSON.stringify(payload));
+    setUser(payload);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.clear();
     setUser(null);
   };
 
@@ -44,8 +37,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth debe usarse dentro de AuthProvider');
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
